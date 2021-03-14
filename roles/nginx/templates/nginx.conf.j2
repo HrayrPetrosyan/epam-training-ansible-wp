@@ -2,7 +2,7 @@ server {
         listen 80;
         listen [::]:80;
 
-        root /var/www/wordpress;
+        root {{ wordpress_unarchive_path }}/wordpress;
 
         index index.php;
 

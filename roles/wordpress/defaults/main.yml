@@ -1,0 +1,3 @@
+---
+wordpress_tar_uri: 'https://wordpress.org/latest.tar.gz'
+wordpress_unarchive_path: '/var/www'

@@ -1,119 +1,39 @@
 ---
 
-- hosts: 'webservers'
-  remote_user: 'hrayr'
+- hosts: 'aws'
+  remote_user: 'ubuntu'
   gather_facts: false
+  roles:
+    - nginx
+    - mysql
+    - wordpress
   tasks:
 
-    - name: 'Install nginx'
-      apt:
-        name: 'nginx'
-        state: 'present'
-      become: true
+    # - name: 'Debug'
+    #   become: true
+    #   debug:
+    #     msg: '{{ ansible_ssh_private_key_file }}'
 
-    - name: 'Install my-sql server'
-      apt:
-        name: 'mysql-server'
-        state: 'present'
-      become: true
+    # - name: Change WP DB config
+    #   become: true
+    #   lineinfile:
+    #     path: /var/www/wordpress/wp-config.php
+    #     regexp: "^define( 'DB_NAME', 'database_name_here' );"
+    #     line: "define( 'DB_NAME', 'wordpress_db' );"
 
-    - name: 'Install php-fpm'
-      apt:
-        name: 'php-fpm'
-        state: 'present'
-      become: true
+    # - name: Change WP username config
+    #   become: true
+    #   lineinfile:
+    #     path: /var/www/wordpress/wp-config.php
+    #     regexp: "^define( 'DB_USER', 'username_here' );"
+    #     line: "define( 'DB_USER', 'wordpress_user' );"
 
-    - name: 'Install php-mysql'
-      apt:
-        name: 'php-mysql'
-        state: 'present'
-      become: true
-
-    - name: Install pip3
-      apt:
-        name: python3-pip
-        state: present
-      become: true
-
-    - name: Make sure pymysql is present
-      become: true
-      pip:
-        name: pymysql
-        state: present
-
-    - name: Create a new database with name 'wordpress_db'
-      become: true
-      community.mysql.mysql_db:
-        name: 'wordpress_db'
-        login_unix_socket: /var/run/mysqld/mysqld.sock
-        state: 'present'
-
-    - name: Create a user 'wordpress_user' for `wordpress_db` with password '12345' with all database privileges
-      become: true
-      community.mysql.mysql_user:
-        name: 'wordpress_user'
-        login_unix_socket: /var/run/mysqld/mysqld.sock
-        host: localhost
-        password: '12345'
-        priv: 'wordpress_db.*:ALL,GRANT'
-        state: present
-
-    - name: Restart mysql
-      become: true
-      service:
-        name: mysql
-        state: restarted
-
-    - name: Download WordPress tar file
-      become: true
-      get_url:
-        url: https://wordpress.org/latest.tar.gz
-        dest: /var/www/latest.tar.gz
-
-    - name: Extract Wordpress tar file
-      become: true
-      unarchive:
-        src: /var/www/latest.tar.gz
-        dest: /var/www
-        remote_src: true
-
-    - name: Remove "latest.tar.gz" file
-      become: true
-      file:
-        path: /var/www/latest.tar.gz
-        state: absent
-
-    - name: Change "wordpress" owner to "www-data"
-      become: true
-      file:
-        path: /var/www/wordpress
-        owner: www-data
-        recurse: true
-
-    - name: Rename "wp-config-sample.php" to "wp-config.php"
-      become: true
-      shell: "mv /var/www/wordpress/wp-config-sample.php /var/www/wordpress/wp-config.php"
-
-    - name: Change WP DB config
-      become: true
-      lineinfile:
-        path: /var/www/wordpress/wp-config.php
-        regexp: "^define( 'DB_NAME', 'database_name_here' );"
-        line: "define( 'DB_NAME', 'wordpress_db' );"
-
-    - name: Change WP username config
-      become: true
-      lineinfile:
-        path: /var/www/wordpress/wp-config.php
-        regexp: "^define( 'DB_USER', 'username_here' );"
-        line: "define( 'DB_USER', 'wordpress_user' );"
-
-    - name: Change WP user password config
-      become: true
-      lineinfile:
-        path: /var/www/wordpress/wp-config.php
-        regexp: "^define( 'DB_PASSWORD', 'password_here' );"
-        line: "define( 'DB_PASSWORD', '12345' );"
+    # - name: Change WP user password config
+    #   become: true
+    #   lineinfile:
+    #     path: /var/www/wordpress/wp-config.php
+    #     regexp: "^define( 'DB_PASSWORD', 'password_here' );"
+    #     line: "define( 'DB_PASSWORD', '12345' );"
 
     # - name: copy nginx config file
     #   copy: 

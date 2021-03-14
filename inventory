@@ -1,2 +1,5 @@
 [webservers]
 10.0.2.5
+
+[aws]
+ec2-3-142-48-71.us-east-2.compute.amazonaws.com
